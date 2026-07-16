@@ -8,20 +8,17 @@ class MarketService {
   Future<MarketPrice> getGoldPrice() async {
     final response = await http.get(Uri.parse(Config.baseUrl));
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
+    final data = jsonDecode(response.body);
 
-      final double price =
-          double.tryParse(data["price"].toString()) ?? 0.0;
-
+    if (data["price"] != null) {
       return MarketPrice(
         symbol: "XAU/USD",
-        price: price,
-        trend: "Live",
+        price: double.parse(data["price"]),
+        trend: "LIVE",
         lastUpdate: DateTime.now(),
       );
     }
 
-    throw Exception("Gagal mengambil data dari Twelve Data");
+    throw Exception(data["message"] ?? "Unknown API Error");
   }
 }
