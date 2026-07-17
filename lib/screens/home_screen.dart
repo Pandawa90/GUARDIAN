@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../services/market_service.dart';
 import '../models/market_price.dart';
+import '../services/market_service.dart';
 import '../widgets/price_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   MarketPrice? marketPrice;
   bool loading = true;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -24,6 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> loadMarket() async {
+    setState(() {
+      loading = true;
+      errorMessage = null;
+    });
+
     try {
       final result = await marketService.getGoldPrice();
 
@@ -34,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
     } catch (e) {
       setState(() {
         loading = false;
+        errorMessage = e.toString();
       });
     }
   }
@@ -42,7 +49,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF101820),
-
       appBar: AppBar(
         backgroundColor: const Color(0xFF101820),
         elevation: 0,
@@ -55,13 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(20),
-
         child: Column(
           children: [
-
             const Text(
               "Market Intelligence",
               style: TextStyle(
@@ -74,17 +77,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
             if (loading)
               const CircularProgressIndicator()
-
             else if (marketPrice != null)
               PriceCard(
                 marketPrice: marketPrice!,
               )
-
             else
-              const Text(
-                "Gagal mengambil data",
-                style: TextStyle(
+              Text(
+                errorMessage ?? "Unknown Error",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
                   color: Colors.red,
+                  fontSize: 15,
                 ),
               ),
 
