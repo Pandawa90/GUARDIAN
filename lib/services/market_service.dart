@@ -6,19 +6,24 @@ import '../models/market_price.dart';
 
 class MarketService {
   Future<MarketPrice> getGoldPrice() async {
-    final response = await http.get(Uri.parse(Config.baseUrl));
+    final url = Uri.parse(Config.baseUrl);
+
+    final response = await http.get(url);
+
+    print("STATUS CODE : ${response.statusCode}");
+    print("BODY : ${response.body}");
 
     final data = jsonDecode(response.body);
 
-    if (data["price"] != null) {
+    if (response.statusCode == 200 && data["price"] != null) {
       return MarketPrice(
         symbol: "XAU/USD",
-        price: double.parse(data["price"]),
+        price: double.parse(data["price"].toString()),
         trend: "LIVE",
         lastUpdate: DateTime.now(),
       );
     }
 
-    throw Exception(data["message"] ?? "Unknown API Error");
+    throw Exception(response.body);
   }
 }
