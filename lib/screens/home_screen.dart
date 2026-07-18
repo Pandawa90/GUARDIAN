@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../models/economic_event.dart';
 import '../models/market_price.dart';
+
+import '../services/economic_service.dart';
 import '../services/market_service.dart';
+
 import '../widgets/price_card.dart';
+
+import 'economic_calendar_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,9 +19,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final MarketService marketService = MarketService();
+  final EconomicService economicService = EconomicService();
 
   MarketPrice? marketPrice;
+  List<EconomicEvent> events = [];
+
   bool loading = true;
+  bool loadingEvents = false;
+
   String? errorMessage;
 
   @override
@@ -102,7 +113,15 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 15),
 
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const EconomicCalendarScreen(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.event),
               label: const Text("Economic Calendar"),
             ),
