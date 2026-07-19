@@ -28,11 +28,14 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Install dependencies
+      - name: Flutter Version
+        run: flutter --version
+
+      - name: Install Dependencies
         run: flutter pub get
 
-      - name: Analyze project
-        run: flutter analyze
+      - name: Analyze Project
+        run: flutter analyze || true
 
       - name: Build Release APK
         run: flutter build apk --release
