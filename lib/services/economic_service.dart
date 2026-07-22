@@ -7,34 +7,35 @@ import '../models/economic_event.dart';
 class EconomicService {
   Future<List<EconomicEvent>> getEvents() async {
     final url = Uri.parse(
-      "https://api.twelvedata.com/economic_calendar?apikey=${Config.apiKey}",
+      "${Config.calendarApiUrl}?apikey=${Config.calendarApiKey}",
     );
 
     final response = await http.get(url);
 
-    print(response.body);
-
     if (response.statusCode != 200) {
-      throw Exception("Gagal mengambil Economic Calendar");
+      throw Exception(
+        "Gagal mengambil Economic Calendar (Status ${response.statusCode})",
+      );
     }
 
-    final json = jsonDecode(response.body);
+    final dynamic jsonData = jsonDecode(response.body);
 
-    if (json["data"] == null) {
-      return [];
+    if (jsonData is! List) {
+      throw Exception("Format data API tidak sesuai.");
     }
 
-    final List list = json["data"];
-
-    return list.map((e) {
+    return jsonData.map<EconomicEvent>((item) {
       return EconomicEvent(
-        country: e["country"] ?? "",
-        title: e["event"] ?? "",
-        impact: e["importance"] ?? "",
-        actual: e["actual"]?.toString() ?? "-",
-        forecast: e["forecast"]?.toString() ?? "-",
-        previous: e["previous"]?.toString() ?? "-",
-        dateTime: DateTime.parse(e["date"]),
+        country: item["country"]?.toString() ?? "-",
+        title: item["event"]?.toString() ?? "-",
+        impact: item["impact"]?.toString() ?? "Low",
+        actual: item["actual"]?.toString() ?? "-",
+        forecast: item["estimate"]?.toString() ?? "-",
+        previous: item["previous"]?.toString() ?? "-",
+        dateTime: DateTime.tryParse(
+              item["date"]?.toString() ?? "",
+            ) ??
+            DateTime.now(),
       );
     }).toList();
   }

@@ -9,6 +9,7 @@ import '../services/market_service.dart';
 import '../widgets/price_card.dart';
 
 import 'economic_calendar_screen.dart';
+import 'ai_oracle_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      final result = await marketService.getGoldPrice();
+      final result = await marketService.getLivePrice();
 
       setState(() {
         marketPrice = result;
@@ -83,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: 18,
               ),
             ),
-
             const SizedBox(height: 30),
 
             if (loading)
@@ -129,9 +129,17 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 15),
 
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const AiOracleScreen(),
+                  ),
+                );
+              },
               icon: const Icon(Icons.smart_toy),
-              label: const Text("AI Prediction"),
+              label: const Text("AI Oracle"),
             ),
           ],
         ),
