@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
 
 void main() {
-  runApp(const GuardianApp());
+  runApp(const GuardianTest());
 }
 
-class GuardianApp extends StatelessWidget {
-  const GuardianApp({super.key});
+class GuardianTest extends StatelessWidget {
+  const GuardianTest({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'GUARDIAN',
-      theme: ThemeData(
-        colorSchemeSeed: Colors.blue,
-        useMaterial3: true,
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        body: Center(
+          child: Text(
+            "GUARDIAN TEST OK",
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ),
-      home: const HomeScreen(),
     );
   }
 }
-
-
