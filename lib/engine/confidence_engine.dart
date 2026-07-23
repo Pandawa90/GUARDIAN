@@ -1,33 +1,28 @@
+import '../models/market_context.dart';
+
 class ConfidenceEngine {
   const ConfidenceEngine();
 
   int analyze({
     required String trend,
-    required double currentPrice,
-    required double support,
-    required double resistance,
+    required MarketContext context,
   }) {
-    int confidence = 60;
+    int confidence = 50;
 
-    if (trend == "Bullish") {
-      confidence += 20;
-    } else if (trend == "Bearish") {
+    if (trend == "Bullish" || trend == "Bearish") {
       confidence += 20;
     }
 
-    final distanceToResistance =
-        (resistance - currentPrice).abs();
-
-    final distanceToSupport =
-        (currentPrice - support).abs();
-
-    if (distanceToResistance < 3 ||
-        distanceToSupport < 3) {
+    if (context.rsi > 55 && context.rsi < 70) {
       confidence += 10;
     }
 
-    if (confidence > 100) {
-      confidence = 100;
+    if (!context.highImpactNews) {
+      confidence += 10;
+    }
+
+    if (confidence > 95) {
+      confidence = 95;
     }
 
     return confidence;

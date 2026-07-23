@@ -1,16 +1,14 @@
+	import '../models/market_context.dart';
+
 class TrendEngine {
   const TrendEngine();
 
-  String analyze({
-    required double currentPrice,
-    required double support,
-    required double resistance,
-  }) {
-    if (currentPrice > resistance) {
+  String analyze(MarketContext context) {
+    if (context.currentPrice > context.resistance) {
       return "Bullish";
     }
 
-    if (currentPrice < support) {
+    if (context.currentPrice < context.support) {
       return "Bearish";
     }
 

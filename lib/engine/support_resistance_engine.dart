@@ -3,15 +3,13 @@ class SupportResistanceEngine {
 
   double support({
     required double currentPrice,
-    double distance = 10.0,
   }) {
-    return currentPrice - distance;
+    return currentPrice - 10;
   }
 
   double resistance({
     required double currentPrice,
-    double distance = 10.0,
   }) {
-    return currentPrice + distance;
+    return currentPrice + 10;
   }
 }

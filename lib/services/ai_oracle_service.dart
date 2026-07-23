@@ -3,21 +3,19 @@ import '../engine/risk_engine.dart';
 import '../engine/signal_engine.dart';
 import '../engine/support_resistance_engine.dart';
 import '../engine/trend_engine.dart';
+
 import '../models/ai_signal.dart';
+import '../models/market_context.dart';
 
 class AiOracleService {
-  final TrendEngine trendEngine = const TrendEngine();
-  final SupportResistanceEngine supportResistanceEngine =
-      const SupportResistanceEngine();
-  final ConfidenceEngine confidenceEngine =
-      const ConfidenceEngine();
-  final SignalEngine signalEngine = const SignalEngine();
-  final RiskEngine riskEngine = const RiskEngine();
+  const AiOracleService();
 
   Future<AiSignal> analyze(double currentPrice) async {
     await Future.delayed(
       const Duration(milliseconds: 300),
     );
+
+    const supportResistanceEngine = SupportResistanceEngine();
 
     final support = supportResistanceEngine.support(
       currentPrice: currentPrice,
@@ -27,27 +25,34 @@ class AiOracleService {
       currentPrice: currentPrice,
     );
 
-    final trend = trendEngine.analyze(
+    final context = MarketContext(
       currentPrice: currentPrice,
       support: support,
       resistance: resistance,
+      ema20: currentPrice,
+      ema50: currentPrice,
+      rsi: 60,
+      atr: 15,
+      highImpactNews: false,
     );
 
+    const trendEngine = TrendEngine();
+    final trend = trendEngine.analyze(context);
+
+    const confidenceEngine = ConfidenceEngine();
     final confidence = confidenceEngine.analyze(
       trend: trend,
-      currentPrice: currentPrice,
-      support: support,
-      resistance: resistance,
+      context: context,
     );
 
+    const signalEngine = SignalEngine();
     final signal = signalEngine.analyze(
       trend: trend,
       confidence: confidence,
-      currentPrice: currentPrice,
-      support: support,
-      resistance: resistance,
+      context: context,
     );
 
+    const riskEngine = RiskEngine();
     final risk = riskEngine.analyze(
       confidence: confidence,
     );
@@ -57,17 +62,17 @@ class AiOracleService {
     switch (signal) {
       case "BUY":
         recommendation =
-            "Trend bullish dengan confidence tinggi. Pertimbangkan entry BUY sesuai manajemen risiko.";
+            "Trend bullish dengan confidence tinggi. Pertimbangkan BUY sesuai manajemen risiko.";
         break;
 
       case "SELL":
         recommendation =
-            "Trend bearish dengan confidence tinggi. Pertimbangkan entry SELL sesuai manajemen risiko.";
+            "Trend bearish dengan confidence tinggi. Pertimbangkan SELL sesuai manajemen risiko.";
         break;
 
       default:
         recommendation =
-            "Belum ada sinyal yang kuat. Tunggu konfirmasi berikutnya.";
+            "Belum ada sinyal kuat. Tunggu konfirmasi berikutnya.";
     }
 
     return AiSignal(

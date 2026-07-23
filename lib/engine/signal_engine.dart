@@ -1,25 +1,25 @@
+import '../models/market_context.dart';
+
 class SignalEngine {
   const SignalEngine();
 
   String analyze({
     required String trend,
     required int confidence,
-    required double currentPrice,
-    required double support,
-    required double resistance,
+    required MarketContext context,
   }) {
     if (trend == "Bullish" &&
         confidence >= 80 &&
-        currentPrice > resistance) {
+        context.currentPrice > context.ema20) {
       return "BUY";
     }
 
     if (trend == "Bearish" &&
         confidence >= 80 &&
-        currentPrice < support) {
+        context.currentPrice < context.ema20) {
       return "SELL";
     }
 
-    return "HOLD";
+    return "WAIT";
   }
 }
