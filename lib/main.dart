@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const GuardianTest());
-}
+  WidgetsFlutterBinding.ensureInitialized();
 
-class GuardianTest extends StatelessWidget {
-  const GuardianTest({super.key});
+  FlutterError.onError = (FlutterErrorDetails details) {
+    debugPrint(details.exceptionAsString());
+  };
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  runApp(
+    const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.deepPurple,
         body: Center(
           child: Text(
-            "GUARDIAN TEST OK",
+            "TEST 12345",
             style: TextStyle(
-              color: Colors.green,
-              fontSize: 28,
+              color: Colors.yellow,
+              fontSize: 40,
               fontWeight: FontWeight.bold,
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
